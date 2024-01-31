@@ -1,0 +1,5 @@
+"Elcs Eszter", "igazgató", "06901234567", "admin@hungary.com"
+"Beviz Elek", "sales", "06907654321", "info@hungary.com"
+"Gipsz Jakab", "sales", "0612345678", "melos@hungary.com"
+"Vég Béla", "sales", "36701234567", "sales@hungary.com"
+"Speedy Gonzales", "sales", "31123456789", "salesspain@hungarycom"

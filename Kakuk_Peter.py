@@ -1,66 +1,3 @@
-'''
-Vizsga feladat1:
-
-Létre kell hozni egy alkalmazást autók eladásának rögzítéséhez egy autókereskedésben.
-A fő feladat: számbavenni az autók eladásának folyamatát,
-rögzíteni az eladást végrehajtó munkatársat, kiszámolni a bevételt.
-A következő információ tárolása szükséges:
-
-Munkatárs:
- NÉV
- Beosztás
- Telefon
- Email
-
-Gépjármű:
- Gyártó neve
- Gyártás éve
- Modell
- Önköltségi ár
- Potenciális eladási ár
-
-Értékesítés:
- Munkatárs
- Gépjármű
- Értékesítés dátuma
- Tényleges eladási ár
-
-A következő funkciókat (függvényeket) kell megírni:
-
- Hozzáadás, törlés, munkavállalói információk
- Hozzáadás, törlés, gépjármű információk
- Hozzáadás, törlés, értékesítési információk
- Jelentések.
-
-
-Az adatok a képernyőn vagy egy fájlban jeleníthetők meg,
-a felhasználó választásának függvényében.
-o Teljes körű információ a cég alkalmazottairól
-o Teljes körű információ a gépjárművekről
-o Teljes körű információ az értékesítésről
-o Egy bizonyos dátum összes értékesítése
-o Összes értékesítés egy bizonyos időszakban
-o Egy adott alkalmazott összes értékesítése
-o A legkeresettebb autó neve az adott időszakban
-o Információ a legsikeresebb kereskedőről az adott időszakban
-o Teljes nyereség az adott időszakban
- Adatok mentése fájlba
- Adatok betöltése fájlból
-
-A feladat megoldható mind függvénnyekkel, mind objektum-orientáltan.
-A hallgató választhat.
-'''
-
-
-'''
- 
-
-
- 
-'''
-
-
-
 import os
 os.system('cls')
 import sys
@@ -92,6 +29,22 @@ class Employee:
                 file.write(data)
         else:
             print(data)
+            
+    
+    @classmethod
+    def load_employees_from_file(cls, file_name):
+        with open(file_name, 'r') as file:
+            for line in file:
+                name, position, telephone, email = line.strip().split(',')
+                cls.add_employee(Employee(name, position, telephone, email))
+
+    @classmethod
+    def print_all_employees(cls):
+        for employee in Employee.employees:
+            Employee.print_employee_data(employee)
+            print()
+
+#############################CLASS DELIMITER #############################
 
 class Vehicle:
     vehicles = []
@@ -121,6 +74,20 @@ class Vehicle:
         else:
             print(data)
 
+    @classmethod
+    def load_vehicles_from_file(cls, file_name):
+        with open(file_name, 'r') as file:
+            for line in file:
+                producer, year_of_production, model, cost, selling_price = line.strip().split(',')
+                cls.add_vehicle(Vehicle(producer, int(year_of_production), model, int(cost), int(selling_price)))
+
+    @classmethod
+    def print_all_vehicles(cls):
+        for vehicle in Vehicle.vehicles:
+            Vehicle.print_vehicle_data(vehicle)
+            print()
+
+#############################CLASS DELIMITER #############################
 
 class Sales:
     saleslist = []
@@ -151,8 +118,27 @@ class Sales:
             print(data)
 
 
+    @classmethod
+    def load_sales_from_file(cls, file_name):
+        with open(file_name, 'r') as file:
+            for line in file:
+                employee_name, vehicle_model, date_of_selling, real_selling_price = line.strip().split(',')
+                employee = next((e for e in Employee.employees if e.name == employee_name), None)
+                vehicle = next((v for v in Vehicle.vehicles if v.model == vehicle_model), None)
+                if employee and vehicle:
+                    cls.add_sale(Sales(employee, vehicle, date_of_selling, int(real_selling_price)))
+
+    @classmethod
+    def print_all_sales(cls):
+        for sale in Sales.saleslist:
+            Sales.print_sales_data(sale)
+            print()
+
+
+
 
 '''
+############################# SOLUTION #############################
 
 '''
 
@@ -160,23 +146,38 @@ def main():
 	print()
 
 
+# Loading data from files
+Employee.load_employees_from_file('employees.txt')
+Vehicle.load_vehicles_from_file('vehicles.txt')
+Sales.load_sales_from_file('sales.txt')
+
+
 # Adding and Removing Records
+
+print()
 
 employee001 = Employee("Elcs Eszter", "igazgató", "06901234567", "admin@hungary.com")
 employee002 = Employee("Beviz Elek", "mérnök", "06907654321", "info@hungary.com")
 
 Employee.print_employee_data(employee001)
-file_name = "employee_data.txt"
-Employee.print_employee_data(employee002, output_file=file_name)
-print(f"Employee data saved to {file_name}")
-
+print()
+employee_data_file_name = "employee_data.txt"
+Employee.print_employee_data(employee002, output_file=employee_data_file_name)
+print(f"Employee data saved to {employee_data_file_name}")
 # Employee.remove_employee(employee002)
+print()
 
-vehicle2 = Vehicle("Honda", 2021, "Accord", 18000, 22000)
-Vehicle.add_vehicle(vehicle2)
-sale2 = Sales(employee002, vehicle2, "2023-01-21", 21000)
+
+vehicle1 = Vehicle("Honda", 2021, "Accord", 3600000, 4500000)
+Vehicle.add_vehicle(vehicle1)
+sale2 = Sales(employee002, vehicle1, "2023-01-21", 21000)
 # Sales.remove_sale(sale2)
-
+print("-" * 60)
+Employee.print_all_employees()
+print("-" * 60)
+Vehicle.print_all_vehicles()
+print("-" * 60)
+Sales.print_all_sales()
 
 
 if __name__ == '__main__':
